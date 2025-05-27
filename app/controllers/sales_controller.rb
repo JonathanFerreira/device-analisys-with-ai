@@ -25,6 +25,7 @@ class SalesController < ApplicationController
 
     respond_to do |format|
       if @sale.save
+        @sale.analyze_with_openai_later
         format.html { redirect_to @sale, notice: "Sale was successfully created." }
         format.json { render :show, status: :created, location: @sale }
       else
@@ -38,6 +39,7 @@ class SalesController < ApplicationController
   def update
     respond_to do |format|
       if @sale.update(sale_params)
+        @sale.analyze_with_openai_later if @sale.saved_change_to_url?
         format.html { redirect_to @sale, notice: "Sale was successfully updated." }
         format.json { render :show, status: :ok, location: @sale }
       else

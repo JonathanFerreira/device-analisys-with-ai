@@ -8,7 +8,79 @@
         <div class="mt-2">
           <%= link_to sale.url, sale.url, class: "text-sm text-blue-600 hover:text-blue-800 hover:underline break-all", target: "_blank", rel: "noopener noreferrer" %>
         </div>
+
+        <div class="mt-4">
+          <div class="max-w-2xl mx-auto overflow-hidden rounded-lg shadow-lg">
+            <%= image_tag sale.url,
+                class: "w-full h-auto object-contain max-h-[500px]",
+                loading: "lazy",
+                alt: "Image for #{sale.title}",
+                onerror: "this.classList.add('hidden'); this.nextElementSibling.classList.remove('hidden')" %>
+            <div class="hidden p-4 text-center text-gray-500 bg-gray-50">
+              Image could not be loaded
+            </div>
+          </div>
+        </div>
       <% end %>
+
+      <% if sale.analysis.present? %>
+        <div class="mt-4 space-y-3 text-sm">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+              <div class="font-medium text-gray-700">Damage Probability</div>
+              <div class="mt-1 text-2xl font-semibold text-gray-900"><%= sale.damage_probability %>%</div>
+              <div class="mt-1 text-xs text-gray-500">Confidence: <%= sale.damage_confidence %>%</div>
+            </div>
+
+            <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+              <div class="font-medium text-gray-700">Brand</div>
+              <div class="mt-1 text-2xl font-semibold text-gray-900"><%= sale.brand %></div>
+              <div class="mt-1 text-xs text-gray-500">Confidence: <%= sale.brand_confidence %>%</div>
+            </div>
+
+            <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+              <div class="font-medium text-gray-700">Model</div>
+              <div class="mt-1 text-2xl font-semibold text-gray-900"><%= sale.model %></div>
+              <div class="mt-1 text-xs text-gray-500">Confidence: <%= sale.model_confidence %>%</div>
+            </div>
+          </div>
+
+          <!-- Raw Analysis Data Table -->
+          <div class="mt-6">
+            <h4 class="text-lg font-medium text-gray-900 mb-3">Raw Analysis Data</h4>
+            <div class="overflow-x-auto">
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Field</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Value</th>
+                  </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                  <% parsed_analysis = JSON.parse(sale.analysis) rescue {} %>
+                  <% parsed_analysis.each do |key, value| %>
+                    <tr>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><%= key %></td>
+                      <td class="px-6 py-4 whitespace-pre-wrap text-sm text-gray-500">
+                        <% if value.is_a?(Hash) || value.is_a?(Array) %>
+                          <code class="bg-gray-100 px-2 py-1 rounded"><%= JSON.pretty_generate(value) %></code>
+                        <% else %>
+                          <%= value %>
+                        <% end %>
+                      </td>
+                    </tr>
+                  <% end %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="text-xs text-gray-500">
+            Analyzed <%= time_ago_in_words(sale.analyzed_at) %> ago
+          </div>
+        </div>
+      <% end %>
+
       <div class="mt-1 text-sm text-gray-500">
         <p>Created <%= time_ago_in_words(sale.created_at) %> ago</p>
       </div>
