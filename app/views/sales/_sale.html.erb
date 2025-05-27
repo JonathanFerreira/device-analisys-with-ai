@@ -4,6 +4,11 @@
       <div class="flex items-center">
         <h3 class="text-lg font-medium text-gray-900"><%= sale.title %></h3>
       </div>
+      <% if sale.url.present? %>
+        <div class="mt-2">
+          <%= link_to sale.url, sale.url, class: "text-sm text-blue-600 hover:text-blue-800 hover:underline break-all", target: "_blank", rel: "noopener noreferrer" %>
+        </div>
+      <% end %>
       <div class="mt-1 text-sm text-gray-500">
         <p>Created <%= time_ago_in_words(sale.created_at) %> ago</p>
       </div>
