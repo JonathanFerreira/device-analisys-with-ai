@@ -1,0 +1,12 @@
+<div id="<%= dom_id sale %>" class="w-full">
+  <div class="flex items-start">
+    <div class="flex-grow">
+      <div class="flex items-center">
+        <h3 class="text-lg font-medium text-gray-900"><%= sale.title %></h3>
+      </div>
+      <div class="mt-1 text-sm text-gray-500">
+        <p>Created <%= time_ago_in_words(sale.created_at) %> ago</p>
+      </div>
+    </div>
+  </div>
+</div>

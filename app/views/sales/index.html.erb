@@ -1,0 +1,35 @@
+<% content_for :title, "Sales" %>
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <% if notice.present? %>
+    <p class="py-3 px-4 bg-green-50 mb-6 text-green-600 font-medium rounded-lg border border-green-200 shadow-sm" id="notice"><%= notice %></p>
+  <% end %>
+
+  <div class="flex justify-between items-center mb-8">
+    <h1 class="font-bold text-4xl text-gray-900">Sales</h1>
+    <%= link_to "New sale", new_sale_path, class: "inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200" %>
+  </div>
+
+  <div id="sales" class="bg-white rounded-lg shadow overflow-hidden">
+    <% if @sales.any? %>
+      <div class="divide-y divide-gray-200">
+        <% @sales.each do |sale| %>
+          <div class="p-6 hover:bg-gray-50 transition-colors duration-200">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
+              <%= render sale %>
+              <div class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                <%= link_to "Show", sale, class: "inline-flex justify-center items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200" %>
+                <%= link_to "Edit", edit_sale_path(sale), class: "inline-flex justify-center items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200" %>
+                <%= button_to "Delete", sale, method: :delete, class: "inline-flex justify-center items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200", data: { turbo_confirm: "Are you sure you want to delete this sale?" } %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="p-6 text-center">
+        <p class="text-gray-500 text-lg">No sales found.</p>
+      </div>
+    <% end %>
+  </div>
+</div>
