@@ -3,7 +3,13 @@ class SalesController < ApplicationController
 
   # GET /sales or /sales.json
   def index
-    @sales = Sale.all
+    @sales = Sale.order(created_at: :desc)
+  end
+
+  # GET /sales/export_csv
+  def export_csv
+    file_path = CsvExportService.export_sales
+    redirect_to file_path, notice: "CSV file has been generated successfully"
   end
 
   # GET /sales/1 or /sales/1.json
