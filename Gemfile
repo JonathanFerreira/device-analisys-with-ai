@@ -57,3 +57,5 @@ end
 gem "ruby-openai"
 
 gem 'sidekiq'
+
+gem "deepseek", "~> 0.1.0"
