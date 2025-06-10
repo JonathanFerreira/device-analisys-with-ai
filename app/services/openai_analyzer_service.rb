@@ -5,7 +5,7 @@ class OpenaiAnalyzerService
 
   def analyze
     return nil if @url.blank?
-
+    puts Time.current
     client = OpenAI::Client.new
     response = client.chat(
       parameters: {
@@ -36,6 +36,7 @@ class OpenaiAnalyzerService
     # Parse the response
     begin
       JSON.parse(response.dig("choices", 0, "message", "content"))
+      puts Time.current
     rescue JSON::ParserError => e
       Rails.logger.error("Failed to parse OpenAI response: #{e.message}")
       nil

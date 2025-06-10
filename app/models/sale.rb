@@ -1,4 +1,6 @@
 class Sale < ApplicationRecord
+  has_many :sale_cycles, dependent: :destroy
+
   validates :title, presence: true
   validates :url, format: { with: URI::DEFAULT_PARSER.make_regexp(%w[http https]), message: "must be a valid HTTP(S) URL" }, allow_blank: true
 
@@ -40,5 +42,9 @@ class Sale < ApplicationRecord
 
   def model_confidence
     analysis&.dig("confiabilidade_modelo")
+  end
+
+  def status_availables
+    %w[pending rejected approved manual_review]
   end
 end

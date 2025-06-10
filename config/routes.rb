@@ -2,6 +2,11 @@ require "sidekiq/web"
 
 Rails.application.routes.draw do
   resources :sales
+  resources :sale_validations, only: [:edit, :update] do
+    member do
+      patch :start_validation
+    end
+  end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
@@ -13,7 +18,7 @@ Rails.application.routes.draw do
   get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
 
   # Defines the root path route ("/")
-  # root "posts#index"
+  root "sales#index"
 
   mount Sidekiq::Web => "/sidekiq"
 end

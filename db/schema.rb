@@ -10,7 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_05_27_184728) do
+ActiveRecord::Schema[7.2].define(version: 2025_06_10_215754) do
+  create_table "sale_cycles", force: :cascade do |t|
+    t.integer "sale_id", null: false
+    t.string "imei"
+    t.string "step"
+    t.string "kind"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["imei"], name: "index_sale_cycles_on_imei"
+    t.index ["kind"], name: "index_sale_cycles_on_kind"
+    t.index ["sale_id"], name: "index_sale_cycles_on_sale_id"
+    t.index ["step"], name: "index_sale_cycles_on_step"
+  end
+
   create_table "sales", force: :cascade do |t|
     t.string "title"
     t.datetime "created_at", null: false
@@ -18,5 +31,9 @@ ActiveRecord::Schema[7.2].define(version: 2025_05_27_184728) do
     t.string "url"
     t.json "analysis"
     t.datetime "analyzed_at"
+    t.string "status"
+    t.index ["status"], name: "index_sales_on_status"
   end
+
+  add_foreign_key "sale_cycles", "sales"
 end
