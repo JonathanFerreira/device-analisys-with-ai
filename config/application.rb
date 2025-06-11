@@ -41,5 +41,8 @@ module ValidationApp
 
     # Use Sidekiq for ActiveJob
     config.active_job.queue_adapter = :sidekiq
+
+    # hosts
+    config.hosts << /.*\.ngrok-free\.app/
   end
 end
