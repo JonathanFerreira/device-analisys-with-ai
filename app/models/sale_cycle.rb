@@ -30,8 +30,10 @@ class SaleCycle < ApplicationRecord
     current_step_index.zero?
   end
 
-  def first_step!
-    update_attribute(:step, step_availables.first)
+  def reset_to_first_step!
+    front_photo.purge
+    back_photo.purge
+    update_columns(imei: nil, step: step_availables.first)
   end
 
   def device_photos?
