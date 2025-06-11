@@ -27,9 +27,6 @@
                   method: :patch,
                   class: "space-y-6",
                   data: { turbo: false }) do |f| %>
-      <%= f.hidden_field :front_photo, value: '', id: 'front_photo_hidden' %>
-      <%= f.hidden_field :back_photo, value: '', id: 'back_photo_hidden' %>
-
       <% if @sale_cycle.errors.any? %>
         <div class="bg-red-50 border-l-4 border-red-400 p-4 mb-6">
           <div class="flex">
@@ -69,7 +66,7 @@
         </div>
 
         <div class="relative">
-          <div class="preview-container aspect-[3/4] bg-gray-100 rounded-lg overflow-hidden mb-4 relative <%= 'ring-2 ring-red-500' if @sale_cycle.errors[:front_photo].any? %>">
+          <div class="preview-container aspect-[3/4] bg-gray-100 rounded-lg overflow-hidden mb-4 relative <%= 'ring-2 ring-red-500' if @sale_cycle.errors[:front_photo].any? %>" onclick="openCamera('front')">
             <img id="front-preview" class="w-full h-full object-cover hidden">
             <button type="button" id="front-remove" class="absolute top-2 right-2 bg-red-600 text-white rounded-full p-1 hidden hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500" onclick="removeImage('front')">
               <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -85,9 +82,18 @@
           </div>
           <%= f.file_field :front_photo,
               accept: "image/*",
-              capture: "environment",
               class: "block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 #{'border-red-500' if @sale_cycle.errors[:front_photo].any?}",
               data: { preview_target: 'front-preview', placeholder_target: 'front-placeholder', remove_target: 'front-remove' } %>
+
+          <!-- Hidden camera input for front photo -->
+          <input type="file"
+                 id="front-camera-input"
+                 accept="image/*"
+                 capture="environment"
+                 class="hidden"
+                 data-preview-target="front-preview"
+                 data-placeholder-target="front-placeholder"
+                 data-remove-target="front-remove">
         </div>
       </div>
 
@@ -106,7 +112,7 @@
         </div>
 
         <div class="relative">
-          <div class="preview-container aspect-[3/4] bg-gray-100 rounded-lg overflow-hidden mb-4 relative <%= 'ring-2 ring-red-500' if @sale_cycle.errors[:back_photo].any? %>">
+          <div class="preview-container aspect-[3/4] bg-gray-100 rounded-lg overflow-hidden mb-4 relative <%= 'ring-2 ring-red-500' if @sale_cycle.errors[:back_photo].any? %>" onclick="openCamera('back')">
             <img id="back-preview" class="w-full h-full object-cover hidden">
             <button type="button" id="back-remove" class="absolute top-2 right-2 bg-red-600 text-white rounded-full p-1 hidden hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500" onclick="removeImage('back')">
               <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -122,9 +128,18 @@
           </div>
           <%= f.file_field :back_photo,
               accept: "image/*",
-              capture: "environment",
               class: "block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 #{'border-red-500' if @sale_cycle.errors[:back_photo].any?}",
               data: { preview_target: 'back-preview', placeholder_target: 'back-placeholder', remove_target: 'back-remove' } %>
+
+          <!-- Hidden camera input for back photo -->
+          <input type="file"
+                 id="back-camera-input"
+                 accept="image/*"
+                 capture="environment"
+                 class="hidden"
+                 data-preview-target="back-preview"
+                 data-placeholder-target="back-placeholder"
+                 data-remove-target="back-remove">
         </div>
       </div>
 
@@ -154,6 +169,10 @@
       const placeholder = document.getElementById(placeholderId);
       const removeButton = document.getElementById(removeId);
 
+      // Get the type (front or back) from the preview ID
+      const type = previewId.split('-')[0];
+      const mainInput = document.querySelector(`input[name="sale_cycle[${type}_photo]"]`);
+
       if (input.files && input.files[0]) {
         const reader = new FileReader();
 
@@ -162,23 +181,39 @@
           preview.classList.remove('hidden');
           removeButton.classList.remove('hidden');
           placeholder.classList.add('hidden');
+
+          // If this is a camera input, transfer the file to the main input
+          if (input.id.includes('camera')) {
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(input.files[0]);
+            mainInput.files = dataTransfer.files;
+          }
         };
 
         reader.readAsDataURL(input.files[0]);
       }
     }
 
+    window.openCamera = function(type) {
+      event.stopPropagation();
+      const cameraInput = document.getElementById(`${type}-camera-input`);
+      cameraInput.click();
+    }
+
     window.removeImage = function(type) {
+      event.stopPropagation();
       const preview = document.getElementById(`${type}-preview`);
       const placeholder = document.getElementById(`${type}-placeholder`);
       const removeButton = document.getElementById(`${type}-remove`);
-      const input = document.querySelector(`input[data-preview-target="${type}-preview"]`);
+      const mainInput = document.querySelector(`input[name="sale_cycle[${type}_photo]"]`);
+      const cameraInput = document.getElementById(`${type}-camera-input`);
 
       preview.src = '';
       preview.classList.add('hidden');
       removeButton.classList.add('hidden');
       placeholder.classList.remove('hidden');
-      input.value = ''; // Clear the file input
+      mainInput.value = '';
+      cameraInput.value = '';
     }
 
     // Show/hide content based on device type
@@ -193,9 +228,10 @@
       desktopMessage.classList.remove('hidden');
     }
 
-    // Add event listeners to file inputs
+    // Add event listeners to all file inputs (both gallery and camera)
     document.querySelectorAll('input[type="file"]').forEach(function(input) {
-      input.addEventListener('change', function() {
+      input.addEventListener('change', function(e) {
+        e.preventDefault();
         handleFileSelect(this);
       });
     });

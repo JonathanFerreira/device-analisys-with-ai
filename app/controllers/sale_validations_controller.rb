@@ -30,6 +30,6 @@ class SaleValidationsController < ApplicationController
   end
 
   def sale_cycle_params
-    params.require(:sale_cycle).permit(:imei, :front_photo, :back_photo)
+    params.fetch(:sale_cycle, {}).permit(:imei, :front_photo, :back_photo)
   end
 end
