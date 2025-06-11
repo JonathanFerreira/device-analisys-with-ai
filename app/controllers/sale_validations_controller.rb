@@ -7,6 +7,7 @@ class SaleValidationsController < ApplicationController
 
   def update
     @sale_cycle.assign_attributes(sale_cycle_params)
+
     if @sale_cycle.save
       @sale_cycle.next_step!
       redirect_to edit_sale_validation_path(@sale_cycle)
@@ -29,6 +30,6 @@ class SaleValidationsController < ApplicationController
   end
 
   def sale_cycle_params
-    params.require(:sale_cycle).permit(:imei)
+    params.require(:sale_cycle).permit(:imei, :front_photo, :back_photo)
   end
 end

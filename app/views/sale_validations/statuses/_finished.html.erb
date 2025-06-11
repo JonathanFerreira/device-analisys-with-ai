@@ -1,0 +1,82 @@
+<div class="max-w-2xl mx-auto p-6">
+  <!-- Pending Icon -->
+  <div class="mx-auto flex items-center justify-center h-24 w-24 rounded-full bg-blue-100 mb-8">
+    <svg class="h-16 w-16 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+    </svg>
+  </div>
+
+  <h2 class="text-2xl font-bold text-gray-900 mb-4">
+    Validação em Análise
+  </h2>
+
+  <div class="rounded-md bg-blue-50 p-4 mb-6">
+    <div class="flex">
+      <div class="flex-shrink-0">
+        <svg class="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+        </svg>
+      </div>
+      <div class="ml-3">
+        <p class="text-sm font-medium text-blue-800">
+          Suas informações foram enviadas e estão em análise
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="prose prose-sm text-gray-500 mx-auto">
+    <p class="mb-4">
+      Obrigado por enviar suas informações. Nossa equipe irá analisar os dados fornecidos e você será notificado sobre o resultado da validação em breve.
+    </p>
+
+    <div class="bg-gray-50 rounded-lg p-4 mt-6">
+      <h3 class="text-sm font-medium text-gray-900 mb-2">O que acontece agora?</h3>
+      <ul class="list-disc pl-5 space-y-2 text-sm text-gray-600">
+        <li>Nossa equipe irá analisar as fotos e informações enviadas</li>
+        <li>O processo de validação pode levar até 24 horas úteis</li>
+        <li>Você receberá uma notificação assim que a análise for concluída</li>
+        <li>Em caso de aprovação, você receberá instruções adicionais</li>
+      </ul>
+    </div>
+
+    <div class="bg-yellow-50 rounded-lg p-4 mt-4">
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <svg class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+          </svg>
+        </div>
+        <div class="ml-3">
+          <p class="text-sm text-yellow-700">
+            Por favor, mantenha seu telefone disponível para contato durante o processo de validação.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-8">
+    <%= link_to "Voltar para o Início", root_path, class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" %>
+  </div>
+</div>
+
+<style>
+  @keyframes check {
+    0% {
+      transform: scale(0);
+      opacity: 0;
+    }
+    50% {
+      transform: scale(1.2);
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  .animate-check {
+    animation: check 0.5s ease-in-out;
+  }
+</style>
