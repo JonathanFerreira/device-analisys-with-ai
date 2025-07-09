@@ -36,7 +36,15 @@ class SaleCycle < ApplicationRecord
     update_columns(imei: nil, step: step_availables.first)
   end
 
-  def device_photos?
-    step == 'device_photos'
+  def imei_info?
+    step == 'imei_info'
+  end
+
+  def device_front_photo?
+    step == 'device_front_photo'
+  end
+
+  def device_back_photo?
+    step == 'device_back_photo'
   end
 end

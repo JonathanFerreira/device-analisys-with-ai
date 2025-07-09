@@ -66,9 +66,9 @@
         </div>
 
         <div class="relative">
-          <div class="preview-container aspect-[3/4] bg-gray-100 rounded-lg overflow-hidden mb-4 relative <%= 'ring-2 ring-red-500' if @sale_cycle.errors[:front_photo].any? %>" onclick="openCamera('front')">
+          <div class="preview-container aspect-[3/4] bg-gray-100 rounded-lg overflow-hidden mb-4 relative <%= 'ring-2 ring-red-500' if @sale_cycle.errors[:front_photo].any? %>" onclick="openCamera()">
             <img id="front-preview" class="w-full h-full object-cover hidden">
-            <button type="button" id="front-remove" class="absolute top-2 right-2 bg-red-600 text-white rounded-full p-1 hidden hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500" onclick="removeImage('front')">
+            <button type="button" id="front-remove" class="absolute top-2 right-2 bg-red-600 text-white rounded-full p-1 hidden hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500" onclick="removeImage()">
               <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
               </svg>
@@ -94,52 +94,6 @@
                  data-preview-target="front-preview"
                  data-placeholder-target="front-placeholder"
                  data-remove-target="front-remove">
-        </div>
-      </div>
-
-      <!-- Back Photo Section -->
-      <div class="space-y-4">
-        <div class="flex justify-between items-center">
-          <div>
-            <h3 class="text-lg font-medium text-gray-900">Foto Traseira</h3>
-            <p class="mt-1 text-sm text-gray-500">Tire uma foto clara da parte traseira do dispositivo.</p>
-          </div>
-          <% if @sale_cycle.errors[:back_photo].any? %>
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
-              Obrigatório
-            </span>
-          <% end %>
-        </div>
-
-        <div class="relative">
-          <div class="preview-container aspect-[3/4] bg-gray-100 rounded-lg overflow-hidden mb-4 relative <%= 'ring-2 ring-red-500' if @sale_cycle.errors[:back_photo].any? %>" onclick="openCamera('back')">
-            <img id="back-preview" class="w-full h-full object-cover hidden">
-            <button type="button" id="back-remove" class="absolute top-2 right-2 bg-red-600 text-white rounded-full p-1 hidden hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500" onclick="removeImage('back')">
-              <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-              </svg>
-            </button>
-            <div id="back-placeholder" class="w-full h-full flex items-center justify-center">
-              <svg class="w-12 h-12 <%= @sale_cycle.errors[:back_photo].any? ? 'text-red-400' : 'text-gray-400' %>" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/>
-              </svg>
-            </div>
-          </div>
-          <%= f.file_field :back_photo,
-              accept: "image/*",
-              class: "block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 #{'border-red-500' if @sale_cycle.errors[:back_photo].any?}",
-              data: { preview_target: 'back-preview', placeholder_target: 'back-placeholder', remove_target: 'back-remove' } %>
-
-          <!-- Hidden camera input for back photo -->
-          <input type="file"
-                 id="back-camera-input"
-                 accept="image/*"
-                 capture="environment"
-                 class="hidden"
-                 data-preview-target="back-preview"
-                 data-placeholder-target="back-placeholder"
-                 data-remove-target="back-remove">
         </div>
       </div>
 
@@ -222,11 +176,7 @@
 
         // Update instructions based on camera type
         const tipElement = document.getElementById('camera-tip');
-        if (currentCameraType === 'front') {
-          tipElement.textContent = 'Centralize a tela do dispositivo na área demarcada';
-        } else {
-          tipElement.textContent = 'Centralize a parte traseira do dispositivo na área demarcada';
-        }
+        tipElement.textContent = 'Centralize a parte traseira do dispositivo na área demarcada';
       } catch (error) {
         console.error('Error accessing camera:', error);
         alert('Erro ao acessar a câmera. Verifique as permissões.');
@@ -255,10 +205,10 @@
 
       // Convert to blob and create file
       canvas.toBlob(function(blob) {
-        const file = new File([blob], `${currentCameraType}_photo.jpg`, { type: 'image/jpeg' });
+        const file = new File([blob], 'front_photo.jpg', { type: 'image/jpeg' });
 
         // Create a fake input event to trigger our file handling
-        const cameraInput = document.getElementById(`${currentCameraType}-camera-input`);
+        const cameraInput = document.getElementById('front-camera-input');
         const dataTransfer = new DataTransfer();
         dataTransfer.items.add(file);
         cameraInput.files = dataTransfer.files;
@@ -271,9 +221,8 @@
       }, 'image/jpeg', 0.8);
     }
 
-    window.openCamera = function(type) {
+    window.openCamera = function() {
       event.stopPropagation();
-      currentCameraType = type;
 
       // Show the modal
       document.getElementById('camera-frame-modal').classList.remove('hidden');
@@ -285,7 +234,6 @@
     window.closeCameraFrame = function() {
       stopCamera();
       document.getElementById('camera-frame-modal').classList.add('hidden');
-      currentCameraType = null;
     }
 
     window.switchCamera = function() {
@@ -305,10 +253,7 @@
       const preview = document.getElementById(previewId);
       const placeholder = document.getElementById(placeholderId);
       const removeButton = document.getElementById(removeId);
-
-      // Get the type (front or back) from the preview ID
-      const type = previewId.split('-')[0];
-      const mainInput = document.querySelector(`input[name="sale_cycle[${type}_photo]"]`);
+      const mainInput = document.querySelector(`input[name="sale_cycle[front_photo]"]`);
 
       if (input.files && input.files[0]) {
         const reader = new FileReader();
@@ -329,13 +274,13 @@
       }
     }
 
-    window.removeImage = function(type) {
+    window.removeImage = function() {
       event.stopPropagation();
-      const preview = document.getElementById(`${type}-preview`);
-      const placeholder = document.getElementById(`${type}-placeholder`);
-      const removeButton = document.getElementById(`${type}-remove`);
-      const mainInput = document.querySelector(`input[name="sale_cycle[${type}_photo]"]`);
-      const cameraInput = document.getElementById(`${type}-camera-input`);
+      const preview = document.getElementById(`front-preview`);
+      const placeholder = document.getElementById(`front-placeholder`);
+      const removeButton = document.getElementById(`front-remove`);
+      const mainInput = document.querySelector(`input[name="sale_cycle[front_photo]"]`);
+      const cameraInput = document.getElementById(`front-camera-input`);
 
       preview.src = '';
       preview.classList.add('hidden');

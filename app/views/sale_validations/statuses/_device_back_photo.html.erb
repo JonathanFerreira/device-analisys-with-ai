@@ -1,0 +1,318 @@
+<div class="max-w-2xl mx-auto p-6">
+  <h2 class="text-2xl font-bold text-gray-900 mb-6">Fotos do Dispositivo</h2>
+
+  <!-- Desktop message -->
+  <div id="desktop-message" class="hidden">
+    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <svg class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+          </svg>
+        </div>
+        <div class="ml-3">
+          <p class="text-sm text-yellow-700">
+            Por favor, acesse esta página através de um dispositivo móvel para tirar as fotos.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile content -->
+  <div id="mobile-content" class="hidden">
+    <%= form_with(model: @sale_cycle,
+                  scope: :sale_cycle,
+                  url: sale_validation_path(@sale_cycle),
+                  method: :patch,
+                  class: "space-y-6",
+                  data: { turbo: false }) do |f| %>
+      <% if @sale_cycle.errors.any? %>
+        <div class="bg-red-50 border-l-4 border-red-400 p-4 mb-6">
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+              </svg>
+            </div>
+            <div class="ml-3">
+              <h3 class="text-sm font-medium text-red-800">
+                Foram encontrados <%= pluralize(@sale_cycle.errors.count, "erro") %>:
+              </h3>
+              <div class="mt-2 text-sm text-red-700">
+                <ul class="list-disc pl-5 space-y-1">
+                  <% @sale_cycle.errors.full_messages.each do |message| %>
+                    <li><%= message %></li>
+                  <% end %>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+
+      <!-- Back Photo Section -->
+      <div class="space-y-4">
+        <div class="flex justify-between items-center">
+          <div>
+            <h3 class="text-lg font-medium text-gray-900">Foto traseira</h3>
+            <p class="mt-1 text-sm text-gray-500">Tire uma foto clara da parte traseira do dispositivo.</p>
+          </div>
+          <% if @sale_cycle.errors[:back_photo].any? %>
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+              Obrigatório
+            </span>
+          <% end %>
+        </div>
+
+        <div class="relative">
+          <div class="preview-container aspect-[3/4] bg-gray-100 rounded-lg overflow-hidden mb-4 relative <%= 'ring-2 ring-red-500' if @sale_cycle.errors[:back_photo].any? %>" onclick="openCamera()">
+            <img id="back-preview" class="w-full h-full object-cover hidden">
+            <button type="button" id="back-remove" class="absolute top-2 right-2 bg-red-600 text-white rounded-full p-1 hidden hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500" onclick="removeImage()">
+              <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+              </svg>
+            </button>
+            <div id="back-placeholder" class="w-full h-full flex items-center justify-center">
+              <svg class="w-12 h-12 <%= @sale_cycle.errors[:back_photo].any? ? 'text-red-400' : 'text-gray-400' %>" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/>
+              </svg>
+            </div>
+          </div>
+          <%= f.file_field :back_photo,
+              accept: "image/*",
+              class: "block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 #{'border-red-500' if @sale_cycle.errors[:back_photo].any?}",
+              data: { preview_target: 'back-preview', placeholder_target: 'back-placeholder', remove_target: 'back-remove' } %>
+
+          <!-- Hidden camera input for back photo -->
+          <input type="file"
+                 id="back-camera-input"
+                 accept="image/*"
+                 capture="environment"
+                 class="hidden"
+                 data-preview-target="back-preview"
+                 data-placeholder-target="back-placeholder"
+                 data-remove-target="back-remove">
+        </div>
+      </div>
+
+      <div class="flex justify-end">
+        <%= f.submit "Continuar",
+            class: "inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500",
+            data: { disable_with: "Enviando..." } %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<!-- Custom Camera Interface -->
+<div id="camera-frame-modal" class="fixed inset-0 bg-black z-50 hidden">
+  <div class="relative w-full h-full">
+    <!-- Camera video element -->
+    <video id="camera-video" class="w-full h-full object-cover" autoplay playsinline></video>
+
+    <!-- Frame overlay -->
+    <div id="camera-overlay" class="absolute inset-0 flex items-center justify-center">
+      <div class="border-2 border-white border-dashed rounded-lg" style="width: 80%; height: 80%;">
+        <div class="absolute inset-0 flex items-center justify-center">
+          <div class="text-white text-center">
+            <div id="camera-instructions" class="mb-4">
+              <h3 class="text-lg font-medium mb-2">Posicione o dispositivo</h3>
+              <p class="text-sm opacity-90" id="camera-tip"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Camera controls -->
+    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-6">
+      <div class="flex items-center justify-center space-x-4">
+        <button type="button" onclick="closeCameraFrame()" class="px-6 py-3 text-white bg-gray-600 rounded-full hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+          Cancelar
+        </button>
+        <button type="button" id="capture-photo-btn" class="w-16 h-16 bg-white rounded-full flex items-center justify-center hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white">
+          <div class="w-12 h-12 bg-white rounded-full border-4 border-gray-300"></div>
+        </button>
+        <button type="button" onclick="switchCamera()" class="px-6 py-3 text-white bg-blue-600 rounded-full hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+          Trocar Câmera
+        </button>
+      </div>
+    </div>
+
+    <!-- Canvas for capturing photo -->
+    <canvas id="photo-canvas" class="hidden"></canvas>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('turbo:load', function() {
+    let currentCameraType = null;
+    let currentStream = null;
+    let facingMode = 'environment'; // Start with back camera
+
+    function isMobileDevice() {
+      return (
+        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+        (navigator.maxTouchPoints && navigator.maxTouchPoints > 2)
+      );
+    }
+
+    async function startCamera() {
+      try {
+        const constraints = {
+          video: {
+            facingMode: facingMode,
+            width: { ideal: 1920 },
+            height: { ideal: 1080 }
+          }
+        };
+
+        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        const video = document.getElementById('camera-video');
+        video.srcObject = stream;
+        currentStream = stream;
+
+        // Update instructions based on camera type
+        const tipElement = document.getElementById('camera-tip');
+        tipElement.textContent = 'Centralize a parte traseira do dispositivo na área demarcada';
+      } catch (error) {
+        console.error('Error accessing camera:', error);
+        alert('Erro ao acessar a câmera. Verifique as permissões.');
+        closeCameraFrame();
+      }
+    }
+
+    function stopCamera() {
+      if (currentStream) {
+        currentStream.getTracks().forEach(track => track.stop());
+        currentStream = null;
+      }
+    }
+
+    function capturePhoto() {
+      const video = document.getElementById('camera-video');
+      const canvas = document.getElementById('photo-canvas');
+      const context = canvas.getContext('2d');
+
+      // Set canvas size to match video
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+
+      // Draw the video frame to canvas
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      // Convert to blob and create file
+      canvas.toBlob(function(blob) {
+        const file = new File([blob], 'back_photo.jpg', { type: 'image/jpeg' });
+
+        // Create a fake input event to trigger our file handling
+        const cameraInput = document.getElementById('back-camera-input');
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+        cameraInput.files = dataTransfer.files;
+
+        // Trigger the change event
+        const event = new Event('change', { bubbles: true });
+        cameraInput.dispatchEvent(event);
+
+        closeCameraFrame();
+      }, 'image/jpeg', 0.8);
+    }
+
+    window.openCamera = function() {
+      event.stopPropagation();
+
+      // Show the modal
+      document.getElementById('camera-frame-modal').classList.remove('hidden');
+
+      // Start the camera
+      startCamera();
+    }
+
+    window.closeCameraFrame = function() {
+      stopCamera();
+      document.getElementById('camera-frame-modal').classList.add('hidden');
+    }
+
+    window.switchCamera = function() {
+      facingMode = facingMode === 'environment' ? 'user' : 'environment';
+      stopCamera();
+      startCamera();
+    }
+
+    window.capturePhoto = function() {
+      capturePhoto();
+    }
+
+    function handleFileSelect(input) {
+      const previewId = input.dataset.previewTarget;
+      const placeholderId = input.dataset.placeholderTarget;
+      const removeId = input.dataset.removeTarget;
+      const preview = document.getElementById(previewId);
+      const placeholder = document.getElementById(placeholderId);
+      const removeButton = document.getElementById(removeId);
+      const mainInput = document.querySelector(`input[name="sale_cycle[back_photo]"]`);
+
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+          preview.src = e.target.result;
+          preview.classList.remove('hidden');
+          removeButton.classList.remove('hidden');
+          placeholder.classList.add('hidden');
+
+          // Transfer the file to the main input
+          const dataTransfer = new DataTransfer();
+          dataTransfer.items.add(input.files[0]);
+          mainInput.files = dataTransfer.files;
+        };
+
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+
+    window.removeImage = function() {
+      event.stopPropagation();
+      const preview = document.getElementById(`back-preview`);
+      const placeholder = document.getElementById(`back-placeholder`);
+      const removeButton = document.getElementById(`back-remove`);
+      const mainInput = document.querySelector(`input[name="sale_cycle[back_photo]"]`);
+      const cameraInput = document.getElementById(`back-camera-input`);
+
+      preview.src = '';
+      preview.classList.add('hidden');
+      removeButton.classList.add('hidden');
+      placeholder.classList.remove('hidden');
+      mainInput.value = '';
+      cameraInput.value = '';
+    }
+
+    // Show/hide content based on device type
+    const mobileContent = document.getElementById('mobile-content');
+    const desktopMessage = document.getElementById('desktop-message');
+
+    if (isMobileDevice()) {
+      mobileContent.classList.remove('hidden');
+      desktopMessage.classList.add('hidden');
+    } else {
+      mobileContent.classList.add('hidden');
+      desktopMessage.classList.remove('hidden');
+    }
+
+    // Add event listeners to all file inputs
+    document.querySelectorAll('input[type="file"]').forEach(function(input) {
+      input.addEventListener('change', function(e) {
+        e.preventDefault();
+        handleFileSelect(this);
+      });
+    });
+
+    // Add event listener to the capture photo button
+    document.getElementById('capture-photo-btn').addEventListener('click', function() {
+      capturePhoto();
+    });
+  });
+</script>
